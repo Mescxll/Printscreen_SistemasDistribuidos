@@ -3,6 +3,7 @@ import platform
 import socket
 import struct
 import subprocess
+import threading
 from datetime import datetime
 from pathlib import Path
 
@@ -150,7 +151,11 @@ def iniciar_servidor() -> None:
 
         while True:
             conexao, endereco = servidor.accept()
-            tratar_cliente(conexao, endereco)
+            threading.Thread(
+                target=tratar_cliente,
+                args=(conexao, endereco),
+                daemon=True,
+            ).start()
 
 
 if __name__ == "__main__":
