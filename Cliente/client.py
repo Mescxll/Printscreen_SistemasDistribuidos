@@ -42,7 +42,7 @@ def enviar_imagem(host: str, porta: int, dados_imagem: bytes) -> None:
         resposta = conexao.recv(1024).decode("utf-8", errors="replace")
 
     if resposta.startswith("OK"):
-        print("Imagem enviada com sucesso.")
+        print("Imagem enviada com sucesso")
     else:
         raise RuntimeError(f"Resposta do servidor: {resposta.strip()}")
 
@@ -61,7 +61,7 @@ def main() -> None:
         except RuntimeError:
             ultima_imagem = None
 
-        print("Monitorando o clipboard. Pressione Ctrl+C para encerrar.")
+        print("Cliente em execução\nCtrl-C para sair")
 
         while True:
             time.sleep(0.5)
@@ -83,7 +83,7 @@ def main() -> None:
                 time.sleep(2)
 
     except KeyboardInterrupt:
-        print("\nCliente encerrado.")
+        print("\nCliente encerrado")
 
 
 if __name__ == "__main__":
