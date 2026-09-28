@@ -2,6 +2,7 @@ import io
 import socket
 import struct
 import sys
+import time
 from PIL import Image, ImageGrab
 
 PORTA_PADRAO = 5001
@@ -55,14 +56,34 @@ def main() -> None:
     porta = int(sys.argv[2]) if len(sys.argv) >= 3 else PORTA_PADRAO
 
     try:
-        dados_imagem = obter_imagem_clipboard()
+        try:
+            ultima_imagem = obter_imagem_clipboard()
+        except RuntimeError:
+            ultima_imagem = None
 
-        print(f"Imagem capturada: {len(dados_imagem)} bytes")
-        enviar_imagem(host, porta, dados_imagem)
+        print("Monitorando o clipboard. Pressione Ctrl+C para encerrar.")
 
-    except Exception as erro:
-        print(f"Erro: {erro}")
-        sys.exit(1)
+        while True:
+            time.sleep(0.5)
+
+            try:
+                dados_imagem = obter_imagem_clipboard()
+            except RuntimeError:
+                continue
+
+            if dados_imagem == ultima_imagem:
+                continue
+
+            try:
+                print(f"Nova imagem: {len(dados_imagem)} bytes")
+                enviar_imagem(host, porta, dados_imagem)
+                ultima_imagem = dados_imagem
+            except Exception as erro:
+                print(f"Erro ao enviar imagem: {erro}")
+                time.sleep(2)
+
+    except KeyboardInterrupt:
+        print("\nCliente encerrado.")
 
 
 if __name__ == "__main__":
