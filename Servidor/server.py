@@ -23,7 +23,6 @@ def recv_exato(conexao: socket.socket, quantidade: int) -> bytes:
     while len(dados) < quantidade:
         pedaco = conexao.recv(quantidade - len(dados))
         if not pedaco:
-            # Conexão foi fechada pelo cliente antes de terminar o envio
             raise ConnectionError(
                 "Conexão encerrada pelo cliente antes de receber todos os dados."
             )
@@ -46,11 +45,9 @@ def receber_header(conexao: socket.socket) -> tuple[str, int]:
 
 
 def salvar_imagem(dados_imagem: bytes, extensao: str) -> Path:
-    """Salva os bytes da imagem em disco com um nome único baseado em timestamp."""
     PASTA_IMAGENS.mkdir(exist_ok=True)
 
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
-    caminho = PASTA_IMAGENS / f"printscreen_{timestamp}.{extensao}"
+    caminho = PASTA_IMAGENS / f"printscreen.{extensao}"
 
     with open(caminho, "wb") as arquivo:
         arquivo.write(dados_imagem)
