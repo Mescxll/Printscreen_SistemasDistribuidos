@@ -8,12 +8,12 @@ from pathlib import Path
 
 from PIL import Image
 
-HOST = "0.0.0.0"          
-PORT = 5001                
+HOST = "0.0.0.0"
+PORT = 5001
 PASTA_IMAGENS = Path("imagens_recebidas")
 
-HEADER_EXT_SIZE = 4         
-HEADER_TAM_SIZE = 8         
+HEADER_EXT_SIZE = 4
+HEADER_TAM_SIZE = 8
 HEADER_TOTAL = HEADER_EXT_SIZE + HEADER_TAM_SIZE
 
 
@@ -64,8 +64,6 @@ def copiar_imagem_para_clipboard(caminho_imagem: Path) -> None:
         _copiar_clipboard_windows(caminho_imagem)
     elif sistema == "Linux":
         _copiar_clipboard_linux(caminho_imagem)
-    elif sistema == "Darwin":
-        _copiar_clipboard_macos(caminho_imagem)
     else:
         raise RuntimeError(f"Sistema operacional não suportado: {sistema}")
 
@@ -89,25 +87,24 @@ def _copiar_clipboard_windows(caminho_imagem: Path) -> None:
 
 def _copiar_clipboard_linux(caminho_imagem: Path) -> None:
     resultado = subprocess.run(
-        ["xclip", "-selection", "clipboard", "-t", "image/png", "-i", str(caminho_imagem)],
+        [
+            "xclip",
+            "-selection",
+            "clipboard",
+            "-t",
+            "image/png",
+            "-i",
+            str(caminho_imagem),
+        ],
         capture_output=True,
     )
     if resultado.returncode != 0:
         raise RuntimeError(
-            f"Falha ao copiar imagem via xclip: {resultado.stderr.decode(errors='replace')}."          
+            f"Falha ao copiar imagem via xclip: {resultado.stderr.decode(errors='replace')}."
         )
 
 
-def _copiar_clipboard_macos(caminho_imagem: Path) -> None:
-    script = f'set the clipboard to (read (POSIX file "{caminho_imagem.resolve()}") as JPEG picture)'
-    resultado = subprocess.run(["osascript", "-e", script], capture_output=True)
-    if resultado.returncode != 0:
-        raise RuntimeError(
-            f"Falha ao copiar imagem via osascript: {resultado.stderr.decode(errors='replace')}"
-        )
-
-
-def atualizar_clipboard_local(caminho_arquivo: Path) -> None:  
+def atualizar_clipboard_local(caminho_arquivo: Path) -> None:
     copiar_imagem_para_clipboard(caminho_arquivo)
     print(f"[clipboard local atualizado com a imagem] {caminho_arquivo.resolve()}")
 
@@ -152,7 +149,7 @@ def iniciar_servidor() -> None:
         print(f"Servidor escutando em {HOST}:{PORT} — aguardando conexões...")
 
         while True:
-            conexao, endereco = servidor.accept()            
+            conexao, endereco = servidor.accept()
             tratar_cliente(conexao, endereco)
 
 
