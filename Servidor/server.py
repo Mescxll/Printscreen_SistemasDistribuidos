@@ -121,9 +121,12 @@ def tratar_cliente(conexao: socket.socket, endereco) -> None:
         caminho = salvar_imagem(dados_imagem, extensao)
         print(f"    Imagem salva em: {caminho}")
 
-        atualizar_clipboard_local(caminho)
-
         conexao.sendall(b"OK\n")
+
+        try:
+            atualizar_clipboard_local(caminho)
+        except Exception as erro:
+            print(f"    [!] Erro ao atualizar o clipboard: {erro}")
 
     except ConnectionError as erro:
         print(f"    [!] Erro de conexão: {erro}")
